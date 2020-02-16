@@ -1,0 +1,17 @@
+/log/*
+/tmp/*
+/storage/*
+!/log/.keep
+!/tmp/.keep
+!/storage/.keep
+
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+.byebug_history
+config/master.key
+
+/.bundle
+bundle.js
+bundle.js.map
