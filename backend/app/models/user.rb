@@ -23,6 +23,7 @@ class User < ApplicationRecord
   after_initialize :ensure_session_token
 
   has_many :transactions
+  has_many :stocks
 
   def self.generate_session_token
     SecureRandom.urlsafe_base64
