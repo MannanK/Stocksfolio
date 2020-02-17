@@ -20,8 +20,10 @@ class User < ApplicationRecord
   validates :password_digest, presence: { message: 'Your password can\'t be blank.' }
   validates :password, length: { minimum: 6, allow_nil: true }
 
+  # as soon as a new User is initialized, ensure they have a session token
   after_initialize :ensure_session_token
 
+  # each user can have many transactions, and if so, will also have many stocks
   has_many :transactions
   has_many :stocks
 
@@ -37,15 +39,21 @@ class User < ApplicationRecord
     nil
   end
 
+  # given a non-encrypted password, store it in the database as an encrypted
+    # password using BCrypt
   def password=(password)
     @password = password
     self.password_digest = BCrypt::Password.create(password)
   end
 
+  # check to see if the given non-encrypted password hashes to the same
+    # encrypted password stored in the database
   def is_password?(password)
     BCrypt::Password.new(self.password_digest).is_password?(password)
   end
 
+  # if user doesn't have a session token, generate one for them by calling the
+    # helper method to generate a session token
   def ensure_session_token
     self.session_token ||= User.generate_session_token
   end

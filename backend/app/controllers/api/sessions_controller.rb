@@ -1,4 +1,5 @@
 class Api::SessionsController < ApplicationController
+  # login
   def create
     @user = User.find_by_credentials(params[:user][:email], params[:user][:password])
 
@@ -10,6 +11,7 @@ class Api::SessionsController < ApplicationController
     end
   end
 
+  # logout
   def destroy
     if current_user
       current_user.reset_session_token!

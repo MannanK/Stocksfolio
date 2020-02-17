@@ -10,8 +10,11 @@
 #  updated_at    :datetime         not null
 #
 
+# each stock will be getting continuously updated after a new transaction is
+  # received for that same ticker symbol
 class Stock < ApplicationRecord
   validates :user_id, :ticker_symbol, :shares, presence: true
 
+  # each stock belongs to a user
   belongs_to :user
 end

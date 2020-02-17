@@ -14,5 +14,6 @@
 class Transaction < ApplicationRecord
   validates :user_id, :ticker_symbol, :shares, :price_per_share, presence: true
 
+  # each transaction belongs to a user
   belongs_to :user
 end
