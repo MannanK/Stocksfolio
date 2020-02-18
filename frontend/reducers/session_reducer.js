@@ -7,7 +7,7 @@ import { merge } from 'lodash';
 // the default object this slice of state should be set to if no one is
   // currently logged in
 const _nullSession = {
-  id: null
+  currentUserId: null
 };
 
 const sessionReducer = (state = _nullSession, action) => {

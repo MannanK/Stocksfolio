@@ -9,6 +9,9 @@ const sessionErrorsReducer = (state = [], action) => {
 
   switch (action.type) {
     case RECEIVE_SESSION_ERRORS:
+      // whenever we receive new session errors, simply overwrite the old
+        // session errors with the new ones
+      // the errors we receive come in an array
       return action.errors;
     case RECEIVE_CURRENT_USER:
       return [];
