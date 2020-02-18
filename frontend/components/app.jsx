@@ -1,8 +1,9 @@
 import React from "react";
+import NavBar from './navbar/navbar';
 
 const App = () => (
   <>
-    <h1>Stocksfolio</h1>
+    <NavBar />
   </>
 );
 
