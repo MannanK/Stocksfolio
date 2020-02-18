@@ -1,13 +1,19 @@
 class Api::UsersController < ApplicationController
   # sign up
   def create
+    passwordsMatch = params[:user][:password] == params[:user][:confirmPassword]
+
     @user = User.new(user_params)
     
-    if @user.save
+    if passwordsMatch && @user.save
       login!(@user)
       render :show
     else
-      render json: @user.errors.full_messages, status: 422
+      @user.valid?
+      errors = @user.errors.full_messages
+      errors.push("The passwords must match") unless passwordsMatch
+
+      render json: errors, status: 422
     end
   end
 

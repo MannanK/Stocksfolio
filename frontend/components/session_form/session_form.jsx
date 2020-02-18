@@ -82,10 +82,14 @@ export default class SessionForm extends React.Component {
       />;
     }
 
+    let errorEls = errors.map((error, i) => (
+      <p className="session-form-error" key={i}>{error}</p>
+    ));
+
     return (
       <form className="session-form" onSubmit={this.handleSubmit}>
         { formTitle }
-        { errors }
+        { errorEls }
         { nameInput }
 
         <input
