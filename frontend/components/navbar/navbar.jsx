@@ -6,12 +6,19 @@ import { logout } from '../../actions/session_actions';
 class NavBar extends React.Component {
   constructor(props) {
     super(props);
-
-    
   }
 
   userLoggedIn() {
-    
+    return (
+      <nav className="navbar">
+        <section className="navbar-title">Stocksfolio</section>
+        <section className="navbar-right-links">
+          <Link to="/portfolio" className="navbar-link">Portfolio</Link>
+          <Link to="/transactions" className="navbar-link">Transactions</Link>
+          <button onClick={this.props.logout} className="navbar-link">Logout</button>
+        </section>
+      </nav>
+    );
   }
 
   userLoggedOut() {
