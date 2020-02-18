@@ -8,9 +8,9 @@ const Auth = ({ component: Component, path, loggedIn, exact, ...rest }) => (
     exact={exact}
     {...rest}
     // show this component only if the user is currently not logged in
-    // otherwise, redirect them to the splash page (temporary)
+    // otherwise, redirect them to the portfolio page
     // ...rest allows for other props to be passed into the route
-    render={props => !loggedIn ? <Component {...props} {...rest} /> : <Redirect to="/" />}
+    render={props => !loggedIn ? <Component {...props} {...rest} /> : <Redirect to="/portfolio" />}
   />
 );
 
@@ -21,9 +21,9 @@ const Protected = ({ component: Component, path, loggedIn, exact, ...rest }) => 
       exact={exact}
       {...rest}
       // show this component only if the user is currently logged in
-      // otherwise, redirect them to the splash page (temporary)
+      // otherwise, redirect them to the login page
       // ...rest allows for other props to be passed into the route
-      render={props => loggedIn ? <Component {...props} {...rest} /> : <Redirect to="/" />}
+      render={props => loggedIn ? <Component {...props} {...rest} /> : <Redirect to="/login" />}
     />
   );
 };
