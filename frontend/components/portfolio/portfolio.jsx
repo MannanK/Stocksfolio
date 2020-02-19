@@ -126,10 +126,14 @@ class Portfolio extends React.Component {
       confirmPurchaseMessage =
         <p className="confirm-purchase-message">
           Please confirm if you'd like to buy
-          <span> {qty} share(s) of {tickerSymbol.toUpperCase()} </span>
+          <span> {qty} </span>
+          share(s) of
+          <span> {tickerSymbol.toUpperCase()} </span>
           for
-          <span> {convertToCurrency.format(latestPrice*qty)}</span>
-          .
+          <span> {convertToCurrency.format(latestPrice*qty)} </span>
+          (
+          <span style={{color : "blue"}}>{convertToCurrency.format(latestPrice)}/share</span>
+          ).
         </p>
       ;
     }
