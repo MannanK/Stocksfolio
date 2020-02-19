@@ -111,7 +111,7 @@ export default class SessionForm extends React.Component {
 
           {confirmPasswordInput}
 
-          <button>{formTitle}</button>
+          <button className="session-form-submit">{formTitle}</button>
         </form>
       </div>
     );

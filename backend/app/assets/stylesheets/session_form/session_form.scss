@@ -1,7 +1,8 @@
 .session-form-container {
-  min-width: fit-content;
-  margin: 0 auto;
-  max-width: 25%;
+  // min-width: fit-content;
+  margin: 8em auto;
+  // margin-top: 8em;
+  max-width: 30%;
   min-height: fit-content;
   display: flex;
   justify-content: center;
@@ -12,12 +13,44 @@
 .session-form {
   display: flex;
   flex-direction: column;
-  width: 55%;
   text-align: center;
-  margin: 2rem 0em;
+  width: 100%;
+  padding: 2rem;
 }
 
 .session-form-title {
   font-size: 2.5em;
   margin-bottom: 0.6em;
+}
+
+.session-form-error {
+  color: red;
+  margin-bottom: 1em;
+  text-decoration: underline;
+  max-width: 100%;
+}
+
+.session-form-input {
+  margin-bottom: 1em;
+  padding: 5px;
+  border: 2px solid black;
+  box-shadow: 3px 4px yellow;
+}
+
+.session-form-submit {
+  width: fit-content;
+  align-self: center;
+  padding: 1em;
+}
+
+@media (max-width: 850px) {
+  .session-form-container {
+    max-width: 70%;
+  }
+}
+
+@media (max-height: 650px) {
+  .session-form-container {
+    margin: 3em auto;
+  }
 }
