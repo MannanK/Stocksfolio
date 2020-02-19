@@ -1,3 +1,5 @@
+@import "colors";
+
 .session-form-container {
   // min-width: fit-content;
   margin: 8em auto;
@@ -32,15 +34,21 @@
 
 .session-form-input {
   margin-bottom: 1em;
-  padding: 5px;
-  border: 2px solid black;
-  box-shadow: 3px 4px yellow;
+  padding: 5px 10px;
+  border: 2px solid $color-yellow;
+  box-shadow: 3px 4px $color-yellow;
 }
 
 .session-form-submit {
   width: fit-content;
   align-self: center;
   padding: 1em;
+  border-radius: 10px;
+  margin-top: 0.7em;
+}
+
+.session-form-submit:hover {
+  background-color: lightgray;
 }
 
 @media (max-width: 850px) {

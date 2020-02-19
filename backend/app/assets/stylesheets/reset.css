@@ -65,6 +65,11 @@ a {
   font-size:100%;
   vertical-align:baseline;
   background:transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: inherit;
 }
 
 /* change colours to suit your needs */
@@ -111,11 +116,37 @@ input, select {
   font-family: 'Saira Semi Condensed', sans-serif;
 }
 
+::placeholder {
+  color: gray;
+  opacity: 1;
+}
+
+::-webkit-input-placeholder {
+  color: gray;
+}
+
+::-moz-placeholder {
+  color: gray;
+}
+
+:-ms-input-placeholder {
+  color: gray;
+}
+
+::-ms-input-placeholder {
+  color: gray;
+}
+
+:-moz-placeholder {
+  color: gray;
+}
+
 button {
 	border: none;
 	margin: 0;
 	padding: 0;
   width: auto;
+  font-family: inherit;
 }
 
 button:hover {

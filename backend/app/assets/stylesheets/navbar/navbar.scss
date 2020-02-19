@@ -3,7 +3,28 @@
 .navbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 1.2em 2em;
   background: $color-yellow;
   font-size: 1.5em;
+  flex-wrap: wrap;
+}
+
+.navbar-link {
+  padding-right: 0.6em;
+
+  &:last-child{
+    padding-right: 0;
+  }
+}
+
+.navbar-link:hover {
+  color: lightslategrey;
+}
+
+.navbar-link.button {
+  background: none;
+  outline: none;
+  font-size: 100%;
+  line-height: 0;
 }
