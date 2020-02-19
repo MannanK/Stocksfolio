@@ -1,0 +1,9 @@
+@import "colors";
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.2em 2em;
+  background: $color-yellow;
+  font-size: 1.5em;
+}

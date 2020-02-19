@@ -87,31 +87,33 @@ export default class SessionForm extends React.Component {
     ));
 
     return (
-      <form className="session-form" onSubmit={this.handleSubmit}>
-        { formTitle }
-        { errorEls }
-        { nameInput }
+      <div className="session-form-container">
+        <form className="session-form" onSubmit={this.handleSubmit}>
+          <h1 className="session-form-title">{formTitle}</h1>
+          {errorEls}
+          {nameInput}
 
-        <input
-          type="email"
-          className="session-form-input"
-          value={user.email}
-          onChange={this.handleChange("email")}
-          placeholder="Email"
-        />
+          <input
+            type="email"
+            className="session-form-input"
+            value={user.email}
+            onChange={this.handleChange("email")}
+            placeholder="Email"
+          />
 
-        <input
-          type="password"
-          className="session-form-input"
-          value={user.password}
-          onChange={this.handleChange("password")}
-          placeholder="Password"
-        />
+          <input
+            type="password"
+            className="session-form-input"
+            value={user.password}
+            onChange={this.handleChange("password")}
+            placeholder="Password"
+          />
 
-        { confirmPasswordInput }
+          {confirmPasswordInput}
 
-        <button>{formTitle}</button>
-      </form>
+          <button>{formTitle}</button>
+        </form>
+      </div>
     );
   }
 }
