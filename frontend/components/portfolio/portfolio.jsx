@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getTickerInfo } from '../../util/iex_api_util';
+import { createTransaction } from '../../util/transactions_api_util';
 
 class Portfolio extends React.Component {
   constructor(props) {
@@ -67,6 +68,12 @@ class Portfolio extends React.Component {
     }
     // the user has enough cash to buy the shares
     else {
+      createTransaction({
+        ticker_symbol: tickerSymbol,
+        shares: qty,
+        price_per_share: latestPrice
+      });
+
       this.setState({
         tickerSymbol: "",
         qty: -1,

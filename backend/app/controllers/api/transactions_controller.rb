@@ -12,18 +12,18 @@ class Api::TransactionsController < ApplicationController
     @transaction.user_id = current_user.id
 
     @stocks = current_user.stocks
-    @current_stock = @stocks.find_by(ticker_symbol: params[:ticker_symbol])
+    @current_stock = @stocks.find_by(ticker_symbol: params[:transaction][:ticker_symbol])
     
     # the user has bought shares for this ticker before
     if (@current_stock)
-      @current_stock.shares += params[:shares]
+      @current_stock.shares += params[:transaction][:shares].to_i
 
     # the user is buying shares for this ticker for the first time
     else
       @current_stock = Stock.new(
         user_id: current_user.id,
-        ticker_symbol: params[:ticker_symbol],
-        shares: params[:shares]
+        ticker_symbol: params[:transaction][:ticker_symbol],
+        shares: params[:transaction][:shares]
       )
     end
 
@@ -32,8 +32,8 @@ class Api::TransactionsController < ApplicationController
       @current_stock.save!
 
       # update user balance
-      current_user.balance -= (params[:shares] * params[:price_per_share])
-      current_user.save!
+      @current_user = current_user
+      @current_user.update!(balance: @current_user.balance - (params[:transaction][:shares].to_i * params[:transaction][:price_per_share].to_d))
 
       render 'api/stocks/index'
     else
