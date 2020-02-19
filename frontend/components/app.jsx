@@ -4,14 +4,14 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import { AuthRoute, ProtectedRoute } from '../util/route_util';
 import LoginFormContainer from './session_form/login_form_container';
 import SignupFormContainer from './session_form/signup_form_container';
-import Portfolio from './portfolio/portfolio';
+import PortfolioContainer from './portfolio/portfolio';
 
 const App = () => (
   <>
     <NavBar />
     
     <Switch>
-      <ProtectedRoute exact path="/portfolio" component={Portfolio}/>
+      <ProtectedRoute exact path="/portfolio" component={PortfolioContainer}/>
       <AuthRoute exact path="/login" component={LoginFormContainer} />
       <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
