@@ -8,7 +8,9 @@ class Portfolio extends React.Component {
 
     this.state = {
       tickerSymbol : "",
-      qty : -1
+      qty : -1,
+      tickerNotFound : false,
+      lowBalance : false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -19,11 +21,35 @@ class Portfolio extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    const { tickerSymbol } = this.state;
+    const { currentUser } = this.props;
+    const { tickerSymbol, qty } = this.state;
+    let userBalance = parseFloat(currentUser.balance);
 
-    getTickerInfo(tickerSymbol).then(res => {
-      console.log(res);
-    });
+    getTickerInfo(tickerSymbol)
+      .then(res => {
+        let purchasePrice = res.latestPrice * qty;
+
+        if (purchasePrice > userBalance) {
+          this.setState({
+            tickerNotFound: false,
+            lowBalance: true
+          });
+        } else {
+          this.setState({
+            tickerSymbol: "",
+            qty: -1,
+            tickerNotFound: false,
+            lowBalance : false
+          });
+        }
+      })
+      .fail(res => {
+        if (res.status === 404) {
+          this.setState({
+            tickerNotFound : true
+          });
+        }
+      });
   }
 
   handleChange(value) {
@@ -43,12 +69,20 @@ class Portfolio extends React.Component {
 
   render() {
     const { currentUser } = this.props;
-    const { tickerSymbol, qty } = this.state;
+    const { tickerSymbol, qty, tickerNotFound, lowBalance } = this.state;
 
     let convertToCurrency = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     });
+
+    let tickerNotFoundError = tickerNotFound ? (
+      <p className="make-purchases-form-error">Please enter a valid ticker!</p>
+    ) : "";
+
+    let lowBalanceError = lowBalance ? (
+      <p className="make-purchases-form-error">You don't have enough cash!</p>
+    ) : "";
 
     return (
       <>
@@ -74,6 +108,9 @@ class Portfolio extends React.Component {
               <span className="portfolio-balance-container">
                 Cash - <span className="portfolio-balance">{convertToCurrency.format(currentUser.balance)}</span>
               </span>
+
+              { tickerNotFoundError }
+              { lowBalanceError }
 
               <form className="make-purchases-form" onSubmit={this.handleSubmit}>
                 <input
