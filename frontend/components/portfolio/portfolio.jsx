@@ -10,52 +10,79 @@ class Portfolio extends React.Component {
       tickerSymbol : "",
       qty : -1,
       tickerNotFound : false,
-      lowBalance : false
+      lowBalance : false,
+      submitButtonType : "BUY",
+      latestPrice : null
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleBuy = this.handleBuy.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.clearForm = this.clearForm.bind(this);
   }
 
-  handleSubmit(e) {
+  handleBuy(e) {
     e.preventDefault();
 
-    const { currentUser } = this.props;
-    const { tickerSymbol, qty } = this.state;
-    let userBalance = parseFloat(currentUser.balance);
+    const { tickerSymbol } = this.state;
 
     getTickerInfo(tickerSymbol)
       .then(res => {
-        let purchasePrice = res.latestPrice * qty;
-
-        if (purchasePrice > userBalance) {
-          this.setState({
-            tickerNotFound: false,
-            lowBalance: true
-          });
-        } else {
-          this.setState({
-            tickerSymbol: "",
-            qty: -1,
-            tickerNotFound: false,
-            lowBalance : false
-          });
-        }
+        this.setState({
+          tickerNotFound : false,
+          submitButtonType : "CONFIRM",
+          latestPrice : res.latestPrice,
+          lowBalance : false
+        });
       })
+      // not a valid ticker symbol
       .fail(res => {
         if (res.status === 404) {
           this.setState({
-            tickerNotFound : true
+            tickerNotFound : true,
+            submitButtonType : "BUY",
+            lowBalance : false
           });
         }
       });
   }
 
+  handleConfirm(e) {
+    e.preventDefault();
+
+    const { currentUser } = this.props;
+    const { tickerSymbol, qty, latestPrice } = this.state;
+
+    let purchasePrice = latestPrice * qty;
+    let userBalance = parseFloat(currentUser.balance);
+
+    // the user doesn't have enough cash to buy the shares
+    if (purchasePrice > userBalance) {
+      this.setState({
+        tickerNotFound: false,
+        lowBalance: true,
+        submitButtonType : "BUY",
+        latestPrice : null
+      });
+    }
+    // the user has enough cash to buy the shares
+    else {
+      this.setState({
+        tickerSymbol: "",
+        qty: -1,
+        tickerNotFound: false,
+        lowBalance: false,
+        submitButtonType : "BUY",
+        latestPrice : null
+      });
+    }
+  }
+
   handleChange(value) {
     return e => {
       this.setState({
-        [value]: e.target.value
+        [value]: e.target.value,
+        submitButtonType : "BUY"
       });
     };
   }
@@ -63,13 +90,14 @@ class Portfolio extends React.Component {
   clearForm() {
     this.setState({
       tickerSymbol: "",
-      qty: -1
+      qty: -1,
+      submitButtonType : "BUY"
     });
   }
 
   render() {
     const { currentUser } = this.props;
-    const { tickerSymbol, qty, tickerNotFound, lowBalance } = this.state;
+    const { tickerSymbol, qty, tickerNotFound, lowBalance, submitButtonType, latestPrice } = this.state;
 
     let convertToCurrency = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -83,6 +111,28 @@ class Portfolio extends React.Component {
     let lowBalanceError = lowBalance ? (
       <p className="make-purchases-form-error">You don't have enough cash!</p>
     ) : "";
+
+    let formAction;
+    let buttonText;
+    let confirmPurchaseMessage;
+
+    if (submitButtonType === "BUY") {
+      formAction = this.handleBuy;
+      buttonText = "Buy";
+      confirmPurchaseMessage = "";
+    } else {
+      formAction = this.handleConfirm;
+      buttonText = "Confirm";
+      confirmPurchaseMessage =
+        <p className="confirm-purchase-message">
+          Please confirm if you'd like to buy
+          <span> {qty} share(s) of {tickerSymbol.toUpperCase()} </span>
+          for
+          <span> {convertToCurrency.format(latestPrice*qty)}</span>
+          .
+        </p>
+      ;
+    }
 
     return (
       <>
@@ -111,8 +161,9 @@ class Portfolio extends React.Component {
 
               { tickerNotFoundError }
               { lowBalanceError }
+              { confirmPurchaseMessage }
 
-              <form className="make-purchases-form" onSubmit={this.handleSubmit}>
+              <form className="make-purchases-form" onSubmit={formAction}>
                 <input
                   type="text"
                   className="make-purchases-form-input"
@@ -129,7 +180,9 @@ class Portfolio extends React.Component {
                   placeholder="Qty"
                 />
 
-                <button className="make-purchases-form-submit">Buy</button>
+                <button className={`make-purchases-form-submit ${submitButtonType.toLowerCase()}`}>
+                  {buttonText}
+                </button>
               </form>
             </div>
           </section>

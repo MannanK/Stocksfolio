@@ -44,11 +44,21 @@
   margin-top: 1em;
 }
 
-.make-purchases-form-error {
+.make-purchases-form-error, .confirm-purchase-message {
   color: red;
   text-decoration: underline;
   max-width: 100%;
   margin-top: 1em;
+  text-align: center;
+}
+
+.confirm-purchase-message {
+  color: green;
+  line-height: 1.3em;
+}
+
+.confirm-purchase-message span {
+  color: red;
 }
 
 .make-purchases-form-submit {
@@ -64,4 +74,12 @@
 
 .make-purchases-form-submit:hover {
   background: darkgreen;
+}
+
+.make-purchases-form-submit.confirm {
+  background: red;
+}
+
+.make-purchases-form-submit.confirm:hover {
+  background: darkred;
 }
