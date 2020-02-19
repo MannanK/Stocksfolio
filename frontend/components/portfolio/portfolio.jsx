@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { getTickerInfo } from '../../util/iex_api_util';
 
 class Portfolio extends React.Component {
   constructor(props) {
@@ -17,6 +18,12 @@ class Portfolio extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+
+    const { tickerSymbol } = this.state;
+
+    getTickerInfo(tickerSymbol).then(res => {
+      console.log(res);
+    });
   }
 
   handleChange(value) {
@@ -29,12 +36,8 @@ class Portfolio extends React.Component {
 
   clearForm() {
     this.setState({
-      user: {
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-      }
+      tickerSymbol: "",
+      qty: -1
     });
   }
 
@@ -72,7 +75,7 @@ class Portfolio extends React.Component {
                 Cash - <span className="portfolio-balance">{convertToCurrency.format(currentUser.balance)}</span>
               </span>
 
-              <form className="make-purchases-form">
+              <form className="make-purchases-form" onSubmit={this.handleSubmit}>
                 <input
                   type="text"
                   className="make-purchases-form-input"
