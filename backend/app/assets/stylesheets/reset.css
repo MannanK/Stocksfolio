@@ -116,6 +116,10 @@ input, select {
   font-family: 'Saira Semi Condensed', sans-serif;
 }
 
+input {
+  font-size: 1.2em;
+}
+
 ::placeholder {
   color: gray;
   opacity: 1;
@@ -147,6 +151,7 @@ button {
 	padding: 0;
   width: auto;
   font-family: inherit;
+  font-size: 1.2em;
 }
 
 button:hover {

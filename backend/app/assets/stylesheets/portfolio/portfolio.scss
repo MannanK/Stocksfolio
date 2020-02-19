@@ -3,11 +3,58 @@
   height: 500px;
 }
 
-.stocks {
+// LEFT SIDE
+
+.portfolio-left {
   width: 50%;
   border-right: 2px solid black;
 }
 
-.make-purchases {
+// RIGHT SIDE
+
+.portfolio-right {
   width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.make-purchases-container {
+  width: 50%;
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.portfolio-balance-container {
+  font-weight: bold;
+  font-size: 2em;
+}
+
+.portfolio-balance {
+  color: green;
+}
+
+.make-purchases-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.make-purchases-form-submit {
+  padding: 0.2em;
+  border-radius: 5px;
+  min-width: fit-content;
+  width: 25%;
+  background: green;
+  color: white;
+  border: 2px solid black;
+  box-shadow: 3px 4px black;
+}
+
+.make-purchases-form-submit:hover {
+  background: darkgreen;
 }

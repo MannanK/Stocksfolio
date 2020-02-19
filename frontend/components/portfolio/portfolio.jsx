@@ -4,30 +4,94 @@ import { connect } from 'react-redux';
 class Portfolio extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      tickerSymbol : "",
+      qty : -1
+    };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.clearForm = this.clearForm.bind(this);
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+  }
+
+  handleChange(value) {
+    return e => {
+      this.setState({
+        [value]: e.target.value
+      });
+    };
+  }
+
+  clearForm() {
+    this.setState({
+      user: {
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+      }
+    });
   }
 
   render() {
     const { currentUser } = this.props;
+    const { tickerSymbol, qty } = this.state;
+
+    let convertToCurrency = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
 
     return (
       <>
         <header className="portfolio-header">
           <span className="portfolio-title">
-            Portfolio (
-          <span className="portfolio-balance">
+            Portfolio
+            {/* Portfolio (
+            <span className="portfolio-balance">
               ${currentUser.balance}
             </span>
-            )
-        </span>
+            ) */}
+          </span>
         </header>
 
         <div className="portfolio-main-container">
-          <section className="stocks">
+          <section className="portfolio-left">
+            {/* stocks-container */}
             Stocks section
           </section>
 
-          <section className="make-purchases">
-            Make purchases section
+          <section className="portfolio-right">
+            <div className="make-purchases-container">
+              <span className="portfolio-balance-container">
+                Cash - <span className="portfolio-balance">{convertToCurrency.format(currentUser.balance)}</span>
+              </span>
+
+              <form className="make-purchases-form">
+                <input
+                  type="text"
+                  className="make-purchases-form-input"
+                  value={tickerSymbol}
+                  onChange={this.handleChange("tickerSymbol")}
+                  placeholder="Ticker"
+                />
+
+                <input
+                  type="number"
+                  className="make-purchases-form-input"
+                  value={(qty === -1 || qty === "0") ? "" : qty}
+                  onChange={this.handleChange("qty")}
+                  placeholder="Qty"
+                />
+
+                <button className="make-purchases-form-submit">Buy</button>
+              </form>
+            </div>
           </section>
         </div>
       </>
