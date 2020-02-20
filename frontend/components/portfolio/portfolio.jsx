@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getTickerInfo } from '../../util/iex_api_util';
+import { getTickerInfo, getPrices } from '../../util/iex_api_util';
 import { fetchStocks, createTransaction } from '../../actions/stock_actions';
 import { isEmpty } from 'lodash';
 
@@ -18,7 +18,7 @@ class Portfolio extends React.Component {
       openingPrices: {}
     };
 
-    this.getPrices = this.getPrices.bind(this);
+    this.getPricesHelper = this.getPricesHelper.bind(this);
     this.handleBuy = this.handleBuy.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -29,20 +29,26 @@ class Portfolio extends React.Component {
     this.props.fetchStocks();
     // start the debounced/throttled call for stock prices here?
 
-    // call getPrices() to retrieve the latest prices for all user stocks 
+    // call getPricesHelper() to retrieve the latest prices for all user stocks 
     // have componentDidUpdate that checks if prev stocks was empty, if so then
       // check if we now have stocks and want to start the interval
     // clear the interval when component unmounts
 
     if (!isEmpty(this.props.stocks)) {
-      this.getPricesIntervalId = setInterval(this.getPrices, 15000);
+      // this.getPricesIntervalId = setInterval(this.getPricesHelper, 15000);
+      this.getPricesHelper();
     }
   }
 
   componentDidUpdate(prevProps) {
+    // if previously our stocks were empty and then we added a stock/stocks
     if (isEmpty(prevProps.stocks) && !isEmpty(this.props.stocks)) {
-      this.getPricesIntervalId = setInterval(this.getPrices, 15000);
-    } else if (!isEmpty(prevProps.stocks) && isEmpty(this.props)) {
+      // this.getPricesIntervalId = setInterval(this.getPricesHelper, 15000);
+      this.getPricesHelper();
+    }
+    // if previously we had stocks and then we removed all stocks (currently 
+      // not possible, but implemented as a precaution/future change)
+    else if (!isEmpty(prevProps.stocks) && isEmpty(this.props)) {
       clearInterval(this.getPricesIntervalId);
     }
   }
@@ -51,10 +57,34 @@ class Portfolio extends React.Component {
     clearInterval(this.getPricesIntervalId);
   }
 
-  getPrices() {
+  getPricesHelper() {
+    // clear the interval if the market has closed?
+    // clear the interval if getPrices .fail()?
+
     const { stocks } = this.props;
 
+    let tickerSymbols = Object.values(stocks).map(stock => stock.ticker_symbol);
+
     console.log(new Date);
+
+    getPrices(tickerSymbols)
+      .then(res => {
+        console.log(res);
+
+        let keys = Object.keys(res);
+        let latestPrices = {};
+        let openingPrices = {};
+
+        keys.forEach(symbol => {
+          latestPrices[symbol] = res[symbol].quote.latestPrice;
+          openingPrices[symbol] = res[symbol].quote.previousClose;
+        });
+
+        this.setState({
+          latestPrices,
+          openingPrices
+        });
+      });
   }
 
   handleBuy(e) {
@@ -156,7 +186,7 @@ class Portfolio extends React.Component {
 
   render() {
     const { currentUser, stocks } = this.props;
-    const { tickerSymbol, qty, error, submitButtonType, buyPrice } = this.state;
+    const { tickerSymbol, qty, error, submitButtonType, buyPrice, latestPrices, openingPrices } = this.state;
 
     let convertToCurrency = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -195,12 +225,30 @@ class Portfolio extends React.Component {
 
     let stockRows = Object.values(stocks).reverse().map((stock, i) => {
       let sharesText = stock.shares > 1 ? "shares" : "share";
+
+      let totalLatestPrice = latestPrices[stock.ticker_symbol] * stock.shares;
+      let totalOpeningPrice = openingPrices[stock.ticker_symbol] * stock.shares;
+      let priceText = totalLatestPrice ? (
+        convertToCurrency.format(totalLatestPrice)
+      ) : "...";
+
+      // give a dynamic class name to the price depending on the comparisons
+      // we could have used inline styles here as well to simply give a color,
+        // but inlne styling is more inefficient than using CSS
+      let priceClassName = "";
+      if (totalLatestPrice < totalOpeningPrice) {
+        priceClassName = "red";
+      } else if (totalLatestPrice === totalOpeningPrice) {
+        priceClassName = "gray";
+      } else {
+        priceClassName = "green";
+      }
       
       return (
         <tr className="stocks-table-row" key={i}>
           <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
           <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
-          <td className="stocks-table-data price">$2,000.00</td>
+          <td className={`stocks-table-data price ${priceClassName}`}>{priceText}</td>
         </tr>
       );
     });

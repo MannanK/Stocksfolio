@@ -15,6 +15,18 @@
   padding: 0.5em 0em;
 }
 
+.stocks-table-data.price.red {
+  color: red;
+}
+
+.stocks-table-data.price.gray {
+  color: gray;
+}
+
+.stocks-table-data.price.green {
+  color: green;
+}
+
 // RIGHT SIDE
 
 .portfolio-right {
