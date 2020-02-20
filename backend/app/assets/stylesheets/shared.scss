@@ -20,6 +20,10 @@
 
 // STOCKS AND TRANSACTIONS TABLES
 
+.portfolio-main-container, .transactions-outer-container {
+  margin-bottom: 5em;
+}
+
 .stocks-container, .transactions-container {
   font-size: 1.2em;
   margin: 0 2em;
@@ -37,6 +41,10 @@
   &:last-child{
     border-bottom: none;
   }
+
+  &:nth-child(odd) {
+    background-color: lightgray;
+  }
 }
 
 .ticker-symbol {
@@ -45,4 +53,12 @@
 
 .num-shares {
   color: purple;
+}
+
+@media (max-width: 700px) {
+  .page-header {
+    text-align: center;
+    margin-top: 0.6em;
+    margin-bottom: 0.6em;
+  }
 }

@@ -24,3 +24,13 @@
   color: black;
   font-size: 0.8rem;
 }
+
+@media (max-width: 700px) {
+  .transactions-outer-container {
+    width: 100%;
+  }
+
+  .transactions-container {
+    font-size: 0.9em;
+  }
+}

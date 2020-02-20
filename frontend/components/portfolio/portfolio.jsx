@@ -32,7 +32,7 @@ class Portfolio extends React.Component {
 
     // user entered some type of input for ticker
     if (tickerSymbol) {
-      if (Number.isInteger(Number(qty))) {
+      if (Number.isInteger(Number(qty)) && qty > 0) {
         getTickerInfo(tickerSymbol)
           .then(res => {
             this.setState({
@@ -51,11 +51,11 @@ class Portfolio extends React.Component {
             }
           });
       }
-      // not a valid integer quantity
+      // not a valid positive integer quantity
       else {
         this.setState({
           submitButtonType: "BUY",
-          error: "Please enter an integer quantity!"
+          error: "Please enter a positive integer quantity!"
         });
       }
     }
