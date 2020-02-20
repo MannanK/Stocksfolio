@@ -107,7 +107,7 @@ class Portfolio extends React.Component {
   }
 
   render() {
-    const { currentUser } = this.props;
+    const { currentUser, stocks } = this.props;
     const { tickerSymbol, qty, tickerNotFound, lowBalance, submitButtonType, latestPrice } = this.state;
 
     let convertToCurrency = new Intl.NumberFormat('en-US', {
@@ -149,6 +149,14 @@ class Portfolio extends React.Component {
       ;
     }
 
+    let stockRows = Object.values(stocks).reverse().map((stock, i) => (
+      <tr key={i}>
+        <td className="stocks-table-data">{stock.ticker_symbol}</td>
+        <td className="stocks-table-data">{stock.shares}</td>
+        <td className="stocks-table-data">$2,000.00</td>
+      </tr>
+    ));
+
     return (
       <>
         <header className="portfolio-header">
@@ -164,8 +172,13 @@ class Portfolio extends React.Component {
 
         <div className="portfolio-main-container">
           <section className="portfolio-left">
-            {/* stocks-container */}
-            Stocks section
+            <div className="stocks-container">
+              <table className="stocks-table">
+                <tbody>
+                  {stockRows}
+                </tbody>
+              </table>
+            </div>
           </section>
 
           <section className="portfolio-right">
@@ -209,7 +222,8 @@ class Portfolio extends React.Component {
 
 const msp = state => ({
   // map the info of the currentUser from the users slice of state
-  currentUser: state.entities.users[state.session.currentUserId]
+  currentUser: state.entities.users[state.session.currentUserId],
+  stocks: state.entities.stocks
 });
 
 const mdp = dispatch => ({
