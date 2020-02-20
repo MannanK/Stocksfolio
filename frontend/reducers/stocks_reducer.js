@@ -8,7 +8,6 @@ const stocksReducer = (state = {}, action) => {
 
   switch (action.type) {
     case RECEIVE_STOCKS:
-      debugger;
       return merge({}, action.stocks);
     case RECEIVE_STOCK:
       return merge({}, state, { [action.data.stock.id]: action.data.stock });
