@@ -5,6 +5,7 @@ import { AuthRoute, ProtectedRoute } from '../util/route_util';
 import LoginFormContainer from './session_form/login_form_container';
 import SignupFormContainer from './session_form/signup_form_container';
 import PortfolioContainer from './portfolio/portfolio';
+import TransactionsContainer from './transactions/transactions';
 
 const App = () => (
   <>
@@ -12,6 +13,7 @@ const App = () => (
     
     <Switch>
       <ProtectedRoute exact path="/portfolio" component={PortfolioContainer}/>
+      <ProtectedRoute exact path="/transactions" component={TransactionsContainer} />
       <AuthRoute exact path="/login" component={LoginFormContainer} />
       <AuthRoute exact path="/signup" component={SignupFormContainer} />
 
