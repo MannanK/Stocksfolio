@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getTickerInfo } from '../../util/iex_api_util';
-import { createTransaction } from '../../util/transactions_api_util';
+import { fetchStocks, createTransaction } from '../../actions/stock_actions';
 
 class Portfolio extends React.Component {
   constructor(props) {
@@ -20,6 +20,10 @@ class Portfolio extends React.Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.clearForm = this.clearForm.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchStocks();
   }
 
   handleBuy(e) {
@@ -68,7 +72,7 @@ class Portfolio extends React.Component {
     }
     // the user has enough cash to buy the shares
     else {
-      createTransaction({
+      this.props.createTransaction({
         ticker_symbol: tickerSymbol,
         shares: qty,
         price_per_share: latestPrice
@@ -209,7 +213,8 @@ const msp = state => ({
 });
 
 const mdp = dispatch => ({
-  
+  fetchStocks: () => dispatch(fetchStocks()),
+  createTransaction: transaction => dispatch(createTransaction(transaction))
 });
 
 export default connect(msp, mdp)(Portfolio);
