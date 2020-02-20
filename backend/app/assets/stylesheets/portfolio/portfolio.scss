@@ -10,13 +10,31 @@
   border-right: 2px solid black;
 }
 
+.stocks-container {
+  font-size: 1.2em;
+  margin-top: 1.5em;
+}
+
 .stocks-table {
   width: 100%;
   text-align: center;
 }
 
+.stocks-table-row {
+  
+}
+
 .stocks-table-data {
   width: 33.33%;
+  padding: 0.5em 0em;
+}
+
+.stocks-table-data.ticker-symbol {
+  color: blue;
+}
+
+.stocks-table-data.num-shares {
+  color: purple;
 }
 
 // RIGHT SIDE
@@ -92,4 +110,21 @@
 
 .make-purchases-form-submit.confirm:hover {
   background: darkred;
+}
+
+@media (max-width: 700px) {
+  .portfolio-main-container {
+    flex-direction: column;
+  }
+
+  .portfolio-left, .portfolio-right {
+    width: 100%;
+    border: none;
+  }
+
+  .make-purchases-container {
+    width: 70%;
+    padding-top: 1.5em;
+    border-top: 2px solid black;
+  }
 }

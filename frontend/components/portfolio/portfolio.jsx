@@ -150,10 +150,10 @@ class Portfolio extends React.Component {
     }
 
     let stockRows = Object.values(stocks).reverse().map((stock, i) => (
-      <tr key={i}>
-        <td className="stocks-table-data">{stock.ticker_symbol}</td>
-        <td className="stocks-table-data">{stock.shares}</td>
-        <td className="stocks-table-data">$2,000.00</td>
+      <tr className="stocks-table-row" key={i}>
+        <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
+        <td className="stocks-table-data num-shares">{stock.shares} shares</td>
+        <td className="stocks-table-data price">$2,000.00</td>
       </tr>
     ));
 
