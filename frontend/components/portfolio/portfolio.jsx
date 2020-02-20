@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getTickerInfo } from '../../util/iex_api_util';
 import { fetchStocks, createTransaction } from '../../actions/stock_actions';
+import { isEmpty } from 'lodash';
 
 class Portfolio extends React.Component {
   constructor(props) {
@@ -11,10 +12,13 @@ class Portfolio extends React.Component {
       tickerSymbol : "",
       qty : -1,
       submitButtonType : "BUY",
-      latestPrice : null,
-      error: ""
+      buyPrice : null,
+      error: "",
+      latestPrices: {},
+      openingPrices: {}
     };
 
+    this.getPrices = this.getPrices.bind(this);
     this.handleBuy = this.handleBuy.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -23,6 +27,34 @@ class Portfolio extends React.Component {
 
   componentDidMount() {
     this.props.fetchStocks();
+    // start the debounced/throttled call for stock prices here?
+
+    // call getPrices() to retrieve the latest prices for all user stocks 
+    // have componentDidUpdate that checks if prev stocks was empty, if so then
+      // check if we now have stocks and want to start the interval
+    // clear the interval when component unmounts
+
+    if (!isEmpty(this.props.stocks)) {
+      this.getPricesIntervalId = setInterval(this.getPrices, 15000);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (isEmpty(prevProps.stocks) && !isEmpty(this.props.stocks)) {
+      this.getPricesIntervalId = setInterval(this.getPrices, 15000);
+    } else if (!isEmpty(prevProps.stocks) && isEmpty(this.props)) {
+      clearInterval(this.getPricesIntervalId);
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.getPricesIntervalId);
+  }
+
+  getPrices() {
+    const { stocks } = this.props;
+
+    console.log(new Date);
   }
 
   handleBuy(e) {
@@ -32,12 +64,13 @@ class Portfolio extends React.Component {
 
     // user entered some type of input for ticker
     if (tickerSymbol) {
+      // user entered a valid quantity
       if (Number.isInteger(Number(qty)) && qty > 0) {
         getTickerInfo(tickerSymbol)
           .then(res => {
             this.setState({
               submitButtonType: "CONFIRM",
-              latestPrice: res.latestPrice,
+              buyPrice: res.latestPrice,
               error: ""
             });
           })
@@ -72,16 +105,16 @@ class Portfolio extends React.Component {
     e.preventDefault();
 
     const { currentUser } = this.props;
-    const { tickerSymbol, qty, latestPrice } = this.state;
+    const { tickerSymbol, qty, buyPrice } = this.state;
 
-    let purchasePrice = latestPrice * qty;
+    let purchasePrice = buyPrice * qty;
     let userBalance = parseFloat(currentUser.balance);
 
     // the user doesn't have enough cash to buy the shares
     if (purchasePrice > userBalance) {
       this.setState({
         submitButtonType : "BUY",
-        latestPrice : null,
+        buyPrice : null,
         error: "You don't have enough cash!"
       });
     }
@@ -90,14 +123,14 @@ class Portfolio extends React.Component {
       this.props.createTransaction({
         ticker_symbol: tickerSymbol.toUpperCase(),
         shares: qty,
-        price_per_share: latestPrice,
+        price_per_share: buyPrice,
       });
 
       this.setState({
         tickerSymbol: "",
         qty: -1,
         submitButtonType : "BUY",
-        latestPrice : null,
+        buyPrice : null,
         error: ""
       });
     }
@@ -123,7 +156,7 @@ class Portfolio extends React.Component {
 
   render() {
     const { currentUser, stocks } = this.props;
-    const { tickerSymbol, qty, error, submitButtonType, latestPrice } = this.state;
+    const { tickerSymbol, qty, error, submitButtonType, buyPrice } = this.state;
 
     let convertToCurrency = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -152,9 +185,9 @@ class Portfolio extends React.Component {
           share(s) of
           <span> {tickerSymbol.toUpperCase()} </span>
           for
-          <span> {convertToCurrency.format(latestPrice*qty)} </span>
+          <span> {convertToCurrency.format(buyPrice*qty)} </span>
           (
-          <span style={{color : "blue"}}>{convertToCurrency.format(latestPrice)}/share</span>
+          <span style={{color : "blue"}}>{convertToCurrency.format(buyPrice)}/share</span>
           ).
         </p>
       ;
