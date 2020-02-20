@@ -10,3 +10,33 @@
 .make-purchases-form-input {
   width: 100%;
 }
+
+// STOCKS AND TRANSACTIONS TABLES
+
+.stocks-container, .transactions-container {
+  font-size: 1.2em;
+  margin: 1.5em 2em;
+  margin-bottom: 0;
+}
+
+.stocks-table, .transactions-table {
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
+}
+
+.stocks-table-row, .transactions-table-row {
+  border-bottom: 2px solid $color-yellow;
+
+  &:last-child{
+    border-bottom: none;
+  }
+}
+
+.ticker-symbol {
+  color: blue;
+}
+
+.num-shares {
+  color: purple;
+}

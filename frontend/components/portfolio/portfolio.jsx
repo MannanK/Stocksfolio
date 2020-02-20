@@ -73,7 +73,7 @@ class Portfolio extends React.Component {
     // the user has enough cash to buy the shares
     else {
       this.props.createTransaction({
-        ticker_symbol: tickerSymbol,
+        ticker_symbol: tickerSymbol.toUpperCase(),
         shares: qty,
         price_per_share: latestPrice
       });
@@ -149,13 +149,17 @@ class Portfolio extends React.Component {
       ;
     }
 
-    let stockRows = Object.values(stocks).reverse().map((stock, i) => (
-      <tr className="stocks-table-row" key={i}>
-        <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
-        <td className="stocks-table-data num-shares">{stock.shares} shares</td>
-        <td className="stocks-table-data price">$2,000.00</td>
-      </tr>
-    ));
+    let stockRows = Object.values(stocks).reverse().map((stock, i) => {
+      let sharesText = stock.shares > 1 ? "shares" : "share";
+      
+      return (
+        <tr className="stocks-table-row" key={i}>
+          <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
+          <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
+          <td className="stocks-table-data price">$2,000.00</td>
+        </tr>
+      );
+    });
 
     return (
       <>

@@ -12,8 +12,39 @@ class Transactions extends React.Component {
   }
 
   render() {
+    const { transactions } = this.props;
+
+    let convertToCurrency = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
+    let transactionRows = Object.values(transactions).reverse().map((transaction, i) => {
+      let sharesText = transaction.shares > 1 ? "shares" : "share";
+
+      return (
+        <tr className="transactions-table-row" key={i}>
+          <td className="transactions-table-data type">BUY</td>
+          <td className="transactions-table-data ticker-symbol">{transaction.ticker_symbol}</td>
+          <td className="transactions-table-data num-shares">{transaction.shares} {sharesText}</td>
+          <td className="transactions-table-data price">
+            {convertToCurrency.format(transaction.price_per_share)}
+            <span>/share</span>
+          </td>
+        </tr>
+      );
+    });
+
     return (
-      <h1>Transactions</h1>
+      <div className="transactions-outer-container">
+        <div className="transactions-container">
+          <table className="transactions-table">
+            <tbody>
+              {transactionRows}
+            </tbody>
+          </table>
+        </div>
+      </div>
     );
   }
 }

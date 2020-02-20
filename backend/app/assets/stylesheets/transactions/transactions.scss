@@ -1,0 +1,26 @@
+.transactions-outer-container {
+  width: 50%;
+}
+
+.transactions-container {
+  margin-right: -webkit-calc(2em + 2px);
+  margin-right: calc(2em + 2px);
+}
+
+.transactions-table-data {
+  width: 26.66%;
+  padding: 0.5em 0em;
+}
+
+.transactions-table-data.type {
+  width: 20%;
+}
+
+.transactions-table-data.price {
+  color: red;
+}
+
+.transactions-table-data span {
+  color: black;
+  font-size: 0.8rem;
+}
