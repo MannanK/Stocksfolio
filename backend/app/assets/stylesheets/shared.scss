@@ -11,12 +11,18 @@
   width: 100%;
 }
 
+// PAGE HEADER
+
+.page-header {
+  font-size: 2.5em;
+  margin: 1em 2.5rem;
+}
+
 // STOCKS AND TRANSACTIONS TABLES
 
 .stocks-container, .transactions-container {
   font-size: 1.2em;
-  margin: 1.5em 2em;
-  margin-bottom: 0;
+  margin: 0 2em;
 }
 
 .stocks-table, .transactions-table {

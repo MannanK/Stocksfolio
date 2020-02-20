@@ -174,16 +174,7 @@ class Portfolio extends React.Component {
 
     return (
       <>
-        <header className="portfolio-header">
-          <span className="portfolio-title">
-            Portfolio
-            {/* Portfolio (
-            <span className="portfolio-balance">
-              ${currentUser.balance}
-            </span>
-            ) */}
-          </span>
-        </header>
+        <header className="page-header">Portfolio</header>
 
         <div className="portfolio-main-container">
           <section className="portfolio-left">

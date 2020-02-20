@@ -36,15 +36,18 @@ class Transactions extends React.Component {
     });
 
     return (
-      <div className="transactions-outer-container">
-        <div className="transactions-container">
-          <table className="transactions-table">
-            <tbody>
-              {transactionRows}
-            </tbody>
-          </table>
+      <>
+        <header className="page-header">Transactions</header>
+        <div className="transactions-outer-container">
+          <div className="transactions-container">
+            <table className="transactions-table">
+              <tbody>
+                {transactionRows}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
