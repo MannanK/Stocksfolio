@@ -27,12 +27,6 @@ class Portfolio extends React.Component {
 
   componentDidMount() {
     this.props.fetchStocks();
-    // start the debounced/throttled call for stock prices here?
-
-    // call getPricesHelper() to retrieve the latest prices for all user stocks 
-    // have componentDidUpdate that checks if prev stocks was empty, if so then
-      // check if we now have stocks and want to start the interval
-    // clear the interval when component unmounts
 
     if (!isEmpty(this.props.stocks)) {
       this.getPricesHelper();
@@ -58,7 +52,6 @@ class Portfolio extends React.Component {
   }
 
   getPricesHelper(justAddedSymbol = undefined) {
-    // clear the interval if the market has closed?
     // clear the interval if getPrices .fail()?
 
     const { stocks } = this.props;
@@ -66,12 +59,8 @@ class Portfolio extends React.Component {
     let tickerSymbols = Object.values(stocks).map(stock => stock.ticker_symbol);
     if (justAddedSymbol) tickerSymbols.push(justAddedSymbol);
 
-    console.log(new Date);
-
     getPrices(tickerSymbols)
       .then(res => {
-        console.log(res);
-
         let keys = Object.keys(res);
         let latestPrices = {};
         let openingPrices = {};
@@ -81,10 +70,21 @@ class Portfolio extends React.Component {
           openingPrices[symbol] = res[symbol].quote.previousClose;
         });
 
+        // check if the market has closed
+        // if the market has closed, there's no point in making API calls every
+          // 15 seconds anymore, because the values aren't going to change until
+          // the market opens again
+        if (!res[keys[0]].quote.isUSMarketOpen) {
+          clearInterval(this.getPricesIntervalId);
+        }
+
         this.setState({
           latestPrices,
           openingPrices
         });
+      })
+      .fail(res => {
+        clearInterval(this.getPricesIntervalId);
       });
   }
 
@@ -157,7 +157,7 @@ class Portfolio extends React.Component {
         price_per_share: buyPrice,
       });
 
-      // reset the interval so that we can immediately fetch the stock that the
+      // fetch all prices so that we can immediately fetch the stock that the
         // user just added
       this.getPricesHelper(tickerSymbol.toUpperCase());
 
