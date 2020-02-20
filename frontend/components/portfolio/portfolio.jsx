@@ -35,16 +35,16 @@ class Portfolio extends React.Component {
     // clear the interval when component unmounts
 
     if (!isEmpty(this.props.stocks)) {
-      // this.getPricesIntervalId = setInterval(this.getPricesHelper, 15000);
       this.getPricesHelper();
+      this.getPricesIntervalId = setInterval(this.getPricesHelper, 15000);
     }
   }
 
   componentDidUpdate(prevProps) {
     // if previously our stocks were empty and then we added a stock/stocks
     if (isEmpty(prevProps.stocks) && !isEmpty(this.props.stocks)) {
-      // this.getPricesIntervalId = setInterval(this.getPricesHelper, 15000);
       this.getPricesHelper();
+      this.getPricesIntervalId = setInterval(this.getPricesHelper, 15000);
     }
     // if previously we had stocks and then we removed all stocks (currently 
       // not possible, but implemented as a precaution/future change)
@@ -57,13 +57,14 @@ class Portfolio extends React.Component {
     clearInterval(this.getPricesIntervalId);
   }
 
-  getPricesHelper() {
+  getPricesHelper(justAddedSymbol = undefined) {
     // clear the interval if the market has closed?
     // clear the interval if getPrices .fail()?
 
     const { stocks } = this.props;
 
     let tickerSymbols = Object.values(stocks).map(stock => stock.ticker_symbol);
+    if (justAddedSymbol) tickerSymbols.push(justAddedSymbol);
 
     console.log(new Date);
 
@@ -156,6 +157,10 @@ class Portfolio extends React.Component {
         price_per_share: buyPrice,
       });
 
+      // reset the interval so that we can immediately fetch the stock that the
+        // user just added
+      this.getPricesHelper(tickerSymbol.toUpperCase());
+
       this.setState({
         tickerSymbol: "",
         qty: -1,
@@ -240,7 +245,7 @@ class Portfolio extends React.Component {
         priceClassName = "red";
       } else if (totalLatestPrice === totalOpeningPrice) {
         priceClassName = "gray";
-      } else {
+      } else if (totalLatestPrice > totalOpeningPrice) {
         priceClassName = "green";
       }
       
