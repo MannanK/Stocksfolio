@@ -13,25 +13,25 @@ export const getTickerInfo = tickerSymbol => (
   })
 );
 
-// export const getPrices = tickerSymbols => (
-//   $.ajax({
-//     url:
-//       IEX_BATCH_QUOTE_URL +
-//       tickerSymbols.join(",") +
-//       "&types=quote&token=" +
-//       window.iexAPIKey +
-//       FILTERS
-//   })
-// );
-
-// // sandbox URL for testing purposes
 export const getPrices = tickerSymbols => (
   $.ajax({
     url:
-      IEX_SANDBOX_BATCH_QUOTE_URL +
+      IEX_BATCH_QUOTE_URL +
       tickerSymbols.join(",") +
-      "&types=quote" +
-      "&token=a" +
+      "&types=quote&token=" +
+      window.iexAPIKey +
       FILTERS
   })
 );
+
+// // sandbox URL for testing purposes
+// export const getPrices = tickerSymbols => (
+//   $.ajax({
+//     url:
+//       IEX_SANDBOX_BATCH_QUOTE_URL +
+//       tickerSymbols.join(",") +
+//       "&types=quote" +
+//       "&token=a" +
+//       FILTERS
+//   })
+// );
