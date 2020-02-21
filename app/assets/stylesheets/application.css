@@ -14,7 +14,22 @@
  *= require_self
  */
 
- body {
-   background-color: #151515;
-   color: white;
- }
+html, body {
+  margin:0;
+  padding:0;
+  height:100%;
+}
+
+body {
+  background-color: #151515;
+  color: white;
+}
+
+#root {
+  min-height:100%;
+  position:relative;
+}
+
+#body {
+  padding-bottom:60px;   /* Height of the footer */
+}

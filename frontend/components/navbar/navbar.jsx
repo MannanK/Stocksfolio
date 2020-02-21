@@ -10,7 +10,7 @@ class NavBar extends React.Component {
 
   userLoggedIn() {
     return (
-      <nav className="navbar">
+      <nav id="navbar">
         <section className="navbar-title">Stocksfolio</section>
         <section className="navbar-right-links">
           <Link to="/portfolio" className="navbar-link">Portfolio</Link>
@@ -34,7 +34,7 @@ class NavBar extends React.Component {
     }
 
     return (
-      <nav className="navbar">
+      <nav id="navbar">
         <section className="navbar-title">Stocksfolio</section>
         { link }
       </nav>
