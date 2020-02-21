@@ -119,6 +119,7 @@ class Portfolio extends React.Component {
       // not a valid positive integer quantity
       else {
         this.setState({
+          qty: -1,
           submitButtonType: "BUY",
           error: "Please enter a positive integer quantity!"
         });
@@ -223,7 +224,7 @@ class Portfolio extends React.Component {
           for
           <span> {convertToCurrency.format(buyPrice*qty)} </span>
           (
-          <span style={{color : "blue"}}>{convertToCurrency.format(buyPrice)}/share</span>
+          <span style={{color : "lightskyblue"}}>{convertToCurrency.format(buyPrice)}/share</span>
           ).
         </p>
       ;

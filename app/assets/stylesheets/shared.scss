@@ -33,22 +33,21 @@
   width: 100%;
   font-weight: bold;
   text-align: center;
+  color: black;
 }
 
 .stocks-table-row, .transactions-table-row {
-  border-bottom: 2px solid $color-yellow;
+  border-bottom: 2px solid black;
 
   &:last-child{
     border-bottom: none;
   }
 
-  &:nth-child(odd) {
-    background-color: lightgray;
-  }
+  background-color: $color-dark-yellow;
 }
 
 .ticker-symbol {
-  color: blue;
+  color: darkblue;
 }
 
 .num-shares {

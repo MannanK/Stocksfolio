@@ -1,14 +1,12 @@
 @import "colors";
 
 .session-form-container {
-  // min-width: fit-content;
   margin: 8em auto;
-  // margin-top: 8em;
   max-width: 30%;
   min-height: fit-content;
   display: flex;
   justify-content: center;
-  border: 3px solid black;
+  border: 3px solid gray;
   border-radius: 10px;
 }
 
@@ -28,7 +26,6 @@
 .session-form-error {
   color: red;
   margin-bottom: 1em;
-  text-decoration: underline;
   max-width: 100%;
 }
 

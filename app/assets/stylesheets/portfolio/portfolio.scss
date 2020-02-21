@@ -7,7 +7,7 @@
 
 .portfolio-left {
   width: 50%;
-  border-right: 2px solid black;
+  border-right: 2px solid gray;
 }
 
 .stocks-table-data {
@@ -16,15 +16,15 @@
 }
 
 .stocks-table-data.red {
-  color: red;
+  color: darkred;
 }
 
 .stocks-table-data.gray {
-  color: gray;
+  color: silver;
 }
 
 .stocks-table-data.green {
-  color: green;
+  color: darkgreen;
 }
 
 // RIGHT SIDE
@@ -63,19 +63,18 @@
 
 .make-purchases-form-error, .confirm-purchase-message {
   color: red;
-  text-decoration: underline;
   max-width: 100%;
   margin-top: 1em;
   text-align: center;
 }
 
 .confirm-purchase-message {
-  color: green;
+  color: lightgreen;
   line-height: 1.3em;
 }
 
 .confirm-purchase-message span {
-  color: red;
+  color: indianred;
 }
 
 .make-purchases-form-submit {
@@ -85,8 +84,8 @@
   width: 25%;
   background: green;
   color: white;
-  border: 2px solid black;
-  box-shadow: 3px 4px black;
+  border: 2px solid gray;
+  box-shadow: 2px 3px gray;
 }
 
 .make-purchases-form-submit:hover {
@@ -94,7 +93,7 @@
 }
 
 .make-purchases-form-submit.confirm {
-  background: red;
+  background: firebrick;
 }
 
 .make-purchases-form-submit.confirm:hover {
@@ -114,7 +113,7 @@
   .make-purchases-container {
     width: 70%;
     padding-top: 1.5em;
-    border-top: 2px solid black;
+    border-top: 2px solid gray;
     margin-top: 1em;
   }
 }
