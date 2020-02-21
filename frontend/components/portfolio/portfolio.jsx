@@ -31,8 +31,10 @@ class Portfolio extends React.Component {
   }
 
   componentDidMount() {
+    // always fetch all stocks once we mount
     this.props.fetchStocks();
 
+    // if our stocks were already not empty, start the 8 second interval right away
     if (!isEmpty(this.props.stocks)) {
       this.getPricesHelper();
       this.getPricesIntervalId = setInterval(this.getPricesHelper, 8000);
@@ -57,13 +59,16 @@ class Portfolio extends React.Component {
   }
 
   getPricesHelper(justAddedSymbol = undefined) {
-    // clear the interval if getPrices .fail()?
-
     const { stocks } = this.props;
 
+    // put all the ticker symbols into an array
     let tickerSymbols = Object.values(stocks).map(stock => stock.ticker_symbol);
+
+    // if user just made a new purchase, justAddedSymbol will be set to that symbol
+      // and therefore will be true; otherwise it's undefined
     if (justAddedSymbol) tickerSymbols.push(justAddedSymbol);
 
+    // get the latest prices for all symbols from the API
     getPrices(tickerSymbols)
       .then(res => {
         let keys = Object.keys(res);
@@ -86,6 +91,9 @@ class Portfolio extends React.Component {
             openingPrices[symbol] = res[symbol].quote.previousClose;
           }
 
+          // calculate the percent change between the latest price and the
+            // opening price/previous day's closing price
+          // convert it to a percent (out of 100)
           changePercents[symbol] = Math.ceil(10000 * (latestPrice - openingPrices[symbol]) / openingPrices[symbol]) / 100;
         });
 
@@ -116,6 +124,7 @@ class Portfolio extends React.Component {
       });
   }
 
+  // the user pressed the initial "Buy" button
   handleBuy(e) {
     e.preventDefault();
 
@@ -161,12 +170,14 @@ class Portfolio extends React.Component {
     }
   }
 
+  // the user pressed the "Confirm" button to confirm their purchase
   handleConfirm(e) {
     e.preventDefault();
 
     const { currentUser } = this.props;
     const { tickerSymbol, qty, buyPrice } = this.state;
 
+    // calculate how much the total price is of the purchase
     let purchasePrice = buyPrice * qty;
     let userBalance = parseFloat(currentUser.balance);
 
@@ -190,6 +201,7 @@ class Portfolio extends React.Component {
         // user just added
       this.getPricesHelper(tickerSymbol.toUpperCase());
 
+      // reset all the values
       this.setState({
         tickerSymbol: "",
         qty: -1,
@@ -213,6 +225,8 @@ class Portfolio extends React.Component {
     const { stocks } = this.props;
     const { latestPrices, openingPrices, changePercents } = this.state;
 
+    // we reverse the ticker symbols so that they are sorted from most newly
+      // added stock to the oldest added stock (from original add date)
     return Object.values(stocks).reverse().map((stock, i) => {
       let sharesText = stock.shares > 1 ? "shares" : "share";
 
@@ -253,9 +267,13 @@ class Portfolio extends React.Component {
     let marketMessage;
 
     if (marketClosed === null) {
+      // we have stocks, just haven't found out if the market is closed yet or not
+        // from the API
       if (!isEmpty(this.props.stocks)) {
         marketMessage = "...";
-      } else {
+      }
+      // we have no stocks and therefore don't need to display any market message
+      else {
         marketMessage = "";
       }
     } else if (!marketClosed) {
