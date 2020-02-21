@@ -15,7 +15,8 @@ class Portfolio extends React.Component {
       buyPrice : null,
       error: "",
       latestPrices: {},
-      openingPrices: {}
+      openingPrices: {},
+      marketClosed: null
     };
 
     this.getPricesHelper = this.getPricesHelper.bind(this);
@@ -77,6 +78,13 @@ class Portfolio extends React.Component {
         // (current free API is limited and doesn't show after-hour prices)
         if (!res[keys[0]].quote.isUSMarketOpen) {
           clearInterval(this.getPricesIntervalId);
+          this.setState({
+            marketClosed : true
+          });
+        } else {
+          this.setState({
+            marketClosed: false
+          });
         }
 
         this.setState({
@@ -193,7 +201,10 @@ class Portfolio extends React.Component {
 
   render() {
     const { currentUser, stocks } = this.props;
-    const { tickerSymbol, qty, error, submitButtonType, buyPrice, latestPrices, openingPrices } = this.state;
+    const {
+      tickerSymbol, qty, error, submitButtonType, buyPrice, latestPrices,
+      openingPrices, marketClosed
+    } = this.state;
 
     let convertToCurrency = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -230,6 +241,16 @@ class Portfolio extends React.Component {
       ;
     }
 
+    let marketMessage;
+    
+    if (marketClosed === null) {
+      marketMessage = "...";
+    } else if (!marketClosed) {
+      marketMessage = "Prices will update every 15 seconds.";
+    } else if (marketClosed) {
+      marketMessage = "The market is currently closed.";
+    }
+
     let stockRows = Object.values(stocks).reverse().map((stock, i) => {
       let sharesText = stock.shares > 1 ? "shares" : "share";
 
@@ -262,7 +283,13 @@ class Portfolio extends React.Component {
 
     return (
       <>
-        <header className="page-header">Portfolio</header>
+        <header className="page-header">
+          Portfolio
+          
+          <p className="market-message">
+            { marketMessage }
+          </p>
+        </header>
 
         <div className="portfolio-main-container">
           <section className="portfolio-left">
