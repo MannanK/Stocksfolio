@@ -12,10 +12,12 @@
     "react-redux": "^7.1.3",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",
-    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {
+    "redux-logger": "^3.0.6"
   },
   "version": "1.0.0",
   "description": "A stock portfolio web-app for the NYC Tech Talent Pipeline fullstack assessment",
