@@ -74,6 +74,7 @@ class Portfolio extends React.Component {
         // if the market has closed, there's no point in making API calls every
           // 15 seconds anymore, because the values aren't going to change until
           // the market opens again
+        // (current free API is limited and doesn't show after-hour prices)
         if (!res[keys[0]].quote.isUSMarketOpen) {
           clearInterval(this.getPricesIntervalId);
         }
@@ -251,7 +252,7 @@ class Portfolio extends React.Component {
       
       return (
         <tr className="stocks-table-row" key={i}>
-          <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
+          <td className={`stocks-table-data ticker-symbol ${priceClassName}`}>{stock.ticker_symbol}</td>
           <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
           <td className={`stocks-table-data price ${priceClassName}`}>{priceText}</td>
         </tr>
