@@ -272,43 +272,59 @@ class Portfolio extends React.Component {
     }
 
     let portfolioPrice = 0.0;
-    let stockRows = Object.values(stocks).reverse().map((stock, i) => {
-      let sharesText = stock.shares > 1 ? "shares" : "share";
+    let portfolioLeft;
 
-      let latestPrice = latestPrices[stock.ticker_symbol];
-      let openingPrice = openingPrices[stock.ticker_symbol];
-      let changePercent = changePercents[stock.ticker_symbol];
-      let priceText = latestPrice ? (
-        convertToCurrency.format(latestPrice)
-      ) : "...";
-      let plus = changePercent > 0 ? "+" : "";
-      portfolioPrice += latestPrices[stock.ticker_symbol] * stock.shares;
+    if (isEmpty(stocks)) {
+      portfolioLeft = 
+        <p className="empty-message">
+          You haven't purchased any stocks! Feel free to do some investing on the right.
+        </p>
+    } else {
+      let stockRows = Object.values(stocks).reverse().map((stock, i) => {
+        let sharesText = stock.shares > 1 ? "shares" : "share";
 
-      // give a dynamic class name to the price depending on the comparisons
-      // we could have used inline styles here as well to simply give a color,
+        let latestPrice = latestPrices[stock.ticker_symbol];
+        let openingPrice = openingPrices[stock.ticker_symbol];
+        let changePercent = changePercents[stock.ticker_symbol];
+        let priceText = latestPrice ? (
+          convertToCurrency.format(latestPrice)
+        ) : "...";
+        let plus = changePercent > 0 ? "+" : "";
+        portfolioPrice += latestPrices[stock.ticker_symbol] * stock.shares;
+
+        // give a dynamic class name to the price depending on the comparisons
+        // we could have used inline styles here as well to simply give a color,
         // but inlne styling is more inefficient than using CSS
-      let priceClassName = "";
-      if (latestPrice < openingPrice) {
-        priceClassName = "red";
-      } else if (latestPrice === openingPrice) {
-        priceClassName = "gray";
-      } else if (latestPrice > openingPrice) {
-        priceClassName = "green";
-      }
+        let priceClassName = "";
+        if (latestPrice < openingPrice) {
+          priceClassName = "red";
+        } else if (latestPrice === openingPrice) {
+          priceClassName = "gray";
+        } else if (latestPrice > openingPrice) {
+          priceClassName = "green";
+        }
 
-      if (!portfolioPrice) {
-        portfolioPrice = 0.0;
-      }
-      
-      return (
-        <tr className="stocks-table-row" key={i}>
-          <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
-          <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
-          <td className={`stocks-table-data price`}>{priceText}</td>
-          <td className={`stocks-table-data change-percents ${priceClassName}`}>{plus}{changePercent}%</td>
-        </tr>
-      );
-    });
+        if (!portfolioPrice) {
+          portfolioPrice = 0.0;
+        }
+
+        return (
+          <tr className="stocks-table-row" key={i}>
+            <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
+            <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
+            <td className={`stocks-table-data price`}>{priceText}</td>
+            <td className={`stocks-table-data change-percents ${priceClassName}`}>{plus}{changePercent}%</td>
+          </tr>
+        );
+      });
+
+      portfolioLeft =
+        <table className="stocks-table">
+          <tbody>
+            {stockRows}
+          </tbody>
+        </table>;
+    }
 
     return (
       <>
@@ -323,11 +339,7 @@ class Portfolio extends React.Component {
         <div className="portfolio-main-container">
           <section className="portfolio-left">
             <div className="stocks-container">
-              <table className="stocks-table">
-                <tbody>
-                  {stockRows}
-                </tbody>
-              </table>
+              {portfolioLeft}
             </div>
           </section>
 

@@ -1,6 +1,5 @@
 .portfolio-main-container {
   display: flex;
-  
 }
 
 .market-message {
@@ -116,11 +115,20 @@
     border: none;
   }
 
+  .empty-message {
+    text-align: center;
+  }
+
   .make-purchases-container {
     width: 70%;
+  }
+
+  .make-purchases-container::before {
+    width: 90vw;
     padding-top: 1.5em;
-    border-top: 2px solid gray;
     margin-top: 1.8em;
+    border-top: 2px solid gray;
+    content: "";
   }
 
   .market-message {
