@@ -19,12 +19,15 @@ class Portfolio extends React.Component {
       marketClosed : null,
       error : ""
     };
+    
+    this.convertToCurrency = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
 
-    this.getPricesHelper = this.getPricesHelper.bind(this);
     this.handleBuy = this.handleBuy.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.clearForm = this.clearForm.bind(this);
   }
 
   componentDidMount() {
@@ -206,26 +209,66 @@ class Portfolio extends React.Component {
     };
   }
 
-  clearForm() {
-    this.setState({
-      tickerSymbol: "",
-      qty: -1,
-      submitButtonType : "BUY",
-      error: ""
+  makeStockRows() {
+    const { stocks } = this.props;
+    const { latestPrices, openingPrices, changePercents } = this.state;
+
+    return Object.values(stocks).reverse().map((stock, i) => {
+      let sharesText = stock.shares > 1 ? "shares" : "share";
+
+      let latestPrice = latestPrices[stock.ticker_symbol];
+      let openingPrice = openingPrices[stock.ticker_symbol];
+      let changePercent = changePercents[stock.ticker_symbol];
+      let priceText = latestPrice ? (
+        this.convertToCurrency.format(latestPrice)
+      ) : "...";
+
+      let plus = changePercent > 0 ? "+" : "";
+
+      // give a dynamic class name to the price depending on the comparisons
+      // we could have used inline styles here as well to simply give a color,
+      // but inlne styling is more inefficient than using CSS
+      let priceClassName = "";
+      if (latestPrice < openingPrice) {
+        priceClassName = "red";
+      } else if (latestPrice === openingPrice) {
+        priceClassName = "gray";
+      } else if (latestPrice > openingPrice) {
+        priceClassName = "green";
+      }
+
+      return (
+        <tr className="stocks-table-row" key={i}>
+          <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
+          <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
+          <td className={`stocks-table-data price`}>{priceText}</td>
+          <td className={`stocks-table-data change-percents ${priceClassName}`}>{plus}{changePercent}%</td>
+        </tr>
+      );
     });
   }
 
-  render() {
-    const { currentUser, stocks } = this.props;
-    const {
-      tickerSymbol, qty, error, submitButtonType, buyPrice, latestPrices,
-      openingPrices, marketClosed, changePercents
-    } = this.state;
+  makeMarketMessage() {
+    const { marketClosed } = this.state;
+    let marketMessage;
 
-    let convertToCurrency = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
+    if (marketClosed === null) {
+      if (!isEmpty(this.props.stocks)) {
+        marketMessage = "...";
+      } else {
+        marketMessage = "";
+      }
+    } else if (!marketClosed) {
+      marketMessage = "Prices will update every 8 seconds.";
+    } else if (marketClosed) {
+      marketMessage = "The market is currently closed.";
+    }
+
+    return marketMessage;
+  }
+
+  makePurchaseForm() {
+    const { tickerSymbol, qty, error, submitButtonType, buyPrice } = this.state;
 
     let errorMessage = error ? (
       <p className="make-purchases-form-error">{error}</p>
@@ -249,79 +292,74 @@ class Portfolio extends React.Component {
           share(s) of
           <span> {tickerSymbol.toUpperCase()} </span>
           for
-          <span> {convertToCurrency.format(buyPrice*qty)} </span>
+          <span> {this.convertToCurrency.format(buyPrice * qty)} </span>
           (
-          <span style={{color : "lightskyblue"}}>{convertToCurrency.format(buyPrice)}/share</span>
+          <span style={{ color: "lightskyblue" }}>{this.convertToCurrency.format(buyPrice)}/share</span>
           ).
         </p>
-      ;
+        ;
     }
 
-    let marketMessage;
-    
-    if (marketClosed === null) {
-      if (!isEmpty(stocks)) {
-        marketMessage = "...";
-      } else {
-        marketMessage = "";
-      }
-    } else if (!marketClosed) {
-      marketMessage = "Prices will update every 8 seconds.";
-    } else if (marketClosed) {
-      marketMessage = "The market is currently closed.";
-    }
+    return (
+      <>
+        {errorMessage}
+        {confirmPurchaseMessage}
 
+        <form className="make-purchases-form" onSubmit={formAction}>
+          <input
+            type="text"
+            className="make-purchases-form-input"
+            value={tickerSymbol}
+            onChange={this.handleChange("tickerSymbol")}
+            placeholder="Ticker"
+          />
+
+          <input
+            type="number"
+            className="make-purchases-form-input"
+            value={(qty === -1 || qty === "0") ? "" : qty}
+            onChange={this.handleChange("qty")}
+            placeholder="Qty"
+          />
+
+          <button className={`make-purchases-form-submit ${submitButtonType.toLowerCase()}`}>
+            {buttonText}
+          </button>
+        </form>
+      </>
+    );
+  }
+
+  calculatePortfolioPrice() {
+    const { latestPrices } = this.state;
     let portfolioPrice = 0.0;
-    let portfolioLeft;
+
+    Object.values(this.props.stocks).forEach((stock) => {
+      portfolioPrice += latestPrices[stock.ticker_symbol] * stock.shares;
+    });
+
+    if (!portfolioPrice) {
+      portfolioPrice = 0.0;
+    }
+
+    return portfolioPrice;
+  }
+
+  render() {
+    const { currentUser, stocks } = this.props;
+
+    let stocksTable;
 
     if (isEmpty(stocks)) {
-      portfolioLeft = 
+      stocksTable = 
         <p className="empty-message">
           You haven't purchased any stocks! Feel free to do some investing on the right.
         </p>
     } else {
-      let stockRows = Object.values(stocks).reverse().map((stock, i) => {
-        let sharesText = stock.shares > 1 ? "shares" : "share";
-
-        let latestPrice = latestPrices[stock.ticker_symbol];
-        let openingPrice = openingPrices[stock.ticker_symbol];
-        let changePercent = changePercents[stock.ticker_symbol];
-        let priceText = latestPrice ? (
-          convertToCurrency.format(latestPrice)
-        ) : "...";
-        let plus = changePercent > 0 ? "+" : "";
-        portfolioPrice += latestPrices[stock.ticker_symbol] * stock.shares;
-
-        // give a dynamic class name to the price depending on the comparisons
-        // we could have used inline styles here as well to simply give a color,
-        // but inlne styling is more inefficient than using CSS
-        let priceClassName = "";
-        if (latestPrice < openingPrice) {
-          priceClassName = "red";
-        } else if (latestPrice === openingPrice) {
-          priceClassName = "gray";
-        } else if (latestPrice > openingPrice) {
-          priceClassName = "green";
-        }
-
-        if (!portfolioPrice) {
-          portfolioPrice = 0.0;
-        }
-
-        return (
-          <tr className="stocks-table-row" key={i}>
-            <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
-            <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
-            <td className={`stocks-table-data price`}>{priceText}</td>
-            <td className={`stocks-table-data change-percents ${priceClassName}`}>{plus}{changePercent}%</td>
-          </tr>
-        );
-      });
-
-      portfolioLeft =
+      stocksTable =
         <table className="stocks-table">
           <tbody>
-            {stockRows}
+            { this.makeStockRows() }
           </tbody>
         </table>;
     }
@@ -329,50 +367,27 @@ class Portfolio extends React.Component {
     return (
       <>
         <header className="page-header">
-          Portfolio ({convertToCurrency.format(portfolioPrice)})
+          Portfolio ({this.convertToCurrency.format(this.calculatePortfolioPrice())})
           
           <p className="market-message">
-            { marketMessage }
+            { this.makeMarketMessage() }
           </p>
         </header>
 
         <div className="portfolio-main-container">
           <section className="portfolio-left">
             <div className="stocks-container">
-              {portfolioLeft}
+              { stocksTable }
             </div>
           </section>
 
           <section className="portfolio-right">
             <div className="make-purchases-container">
               <span className="portfolio-balance-container">
-                Cash - <span className="portfolio-balance">{convertToCurrency.format(currentUser.balance)}</span>
+                Cash - <span className="portfolio-balance">{this.convertToCurrency.format(currentUser.balance)}</span>
               </span>
 
-              { errorMessage }
-              { confirmPurchaseMessage }
-
-              <form className="make-purchases-form" onSubmit={formAction}>
-                <input
-                  type="text"
-                  className="make-purchases-form-input"
-                  value={tickerSymbol}
-                  onChange={this.handleChange("tickerSymbol")}
-                  placeholder="Ticker"
-                />
-
-                <input
-                  type="number"
-                  className="make-purchases-form-input"
-                  value={(qty === -1 || qty === "0") ? "" : qty}
-                  onChange={this.handleChange("qty")}
-                  placeholder="Qty"
-                />
-
-                <button className={`make-purchases-form-submit ${submitButtonType.toLowerCase()}`}>
-                  {buttonText}
-                </button>
-              </form>
+              { this.makePurchaseForm() }
             </div>
           </section>
         </div>
@@ -382,7 +397,6 @@ class Portfolio extends React.Component {
 }
 
 const msp = state => ({
-  // map the info of the currentUser from the users slice of state
   currentUser: state.entities.users[state.session.currentUserId],
   stocks: state.entities.stocks
 });
