@@ -13,10 +13,10 @@ class Portfolio extends React.Component {
       qty : -1,
       submitButtonType : "BUY",
       buyPrice : null,
-      error: "",
-      latestPrices: {},
-      openingPrices: {},
-      marketClosed: null
+      latestPrices : {},
+      openingPrices : {},
+      marketClosed : null,
+      error : ""
     };
 
     this.getPricesHelper = this.getPricesHelper.bind(this);
@@ -253,32 +253,42 @@ class Portfolio extends React.Component {
     let marketMessage;
     
     if (marketClosed === null) {
-      marketMessage = "...";
+      if (!isEmpty(stocks)) {
+        marketMessage = "...";
+      } else {
+        marketMessage = "";
+      }
     } else if (!marketClosed) {
       marketMessage = "Prices will update every 8 seconds.";
     } else if (marketClosed) {
       marketMessage = "The market is currently closed.";
     }
 
+    let portfolioPrice = 0.0;
     let stockRows = Object.values(stocks).reverse().map((stock, i) => {
       let sharesText = stock.shares > 1 ? "shares" : "share";
 
-      let totalLatestPrice = latestPrices[stock.ticker_symbol];
-      let totalOpeningPrice = openingPrices[stock.ticker_symbol];
-      let priceText = totalLatestPrice ? (
-        convertToCurrency.format(totalLatestPrice)
+      let latestPrice = latestPrices[stock.ticker_symbol];
+      let openingPrice = openingPrices[stock.ticker_symbol];
+      let priceText = latestPrice ? (
+        convertToCurrency.format(latestPrice)
       ) : "...";
+      portfolioPrice += latestPrices[stock.ticker_symbol] * stock.shares;
 
       // give a dynamic class name to the price depending on the comparisons
       // we could have used inline styles here as well to simply give a color,
         // but inlne styling is more inefficient than using CSS
       let priceClassName = "";
-      if (totalLatestPrice < totalOpeningPrice) {
+      if (latestPrice < openingPrice) {
         priceClassName = "red";
-      } else if (totalLatestPrice === totalOpeningPrice) {
+      } else if (latestPrice === openingPrice) {
         priceClassName = "gray";
-      } else if (totalLatestPrice > totalOpeningPrice) {
+      } else if (latestPrice > openingPrice) {
         priceClassName = "green";
+      }
+
+      if (!portfolioPrice) {
+        portfolioPrice = 0.0;
       }
       
       return (
@@ -293,7 +303,7 @@ class Portfolio extends React.Component {
     return (
       <>
         <header className="page-header">
-          Portfolio
+          Portfolio ({convertToCurrency.format(portfolioPrice)})
           
           <p className="market-message">
             { marketMessage }
