@@ -304,7 +304,7 @@ class Portfolio extends React.Component {
         <tr className="stocks-table-row" key={i}>
           <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
           <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
-          <td className={`stocks-table-data price ${priceClassName}`}>{priceText}</td>
+          <td className={`stocks-table-data price`}>{priceText}</td>
           <td className={`stocks-table-data change-percents ${priceClassName}`}>{plus}{changePercent}%</td>
         </tr>
       );
