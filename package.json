@@ -22,6 +22,10 @@
   "version": "1.0.0",
   "description": "A stock portfolio web-app for the NYC Tech Talent Pipeline fullstack assessment",
   "main": "index.js",
+  "engines": {
+    "node": "12.13.0",
+    "npm": "6.12.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --watch --mode=development",
