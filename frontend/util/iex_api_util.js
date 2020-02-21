@@ -1,7 +1,7 @@
 const IEX_QUOTE_URL = "https://cloud.iexapis.com/stable/stock/";
 const IEX_BATCH_QUOTE_URL = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=";
 const IEX_SANDBOX_BATCH_QUOTE_URL = "https://sandbox.iexapis.com/stable/stock/market/batch?symbols=";
-const FILTERS = "&filter=symbol,latestPrice,previousClose,open, isUSMarketOpen";
+const FILTERS = "&filter=symbol,latestPrice,previousClose,open,isUSMarketOpen";
 
 export const getTickerInfo = tickerSymbol => (
   $.ajax({

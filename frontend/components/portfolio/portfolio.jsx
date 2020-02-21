@@ -15,6 +15,7 @@ class Portfolio extends React.Component {
       buyPrice : null,
       latestPrices : {},
       openingPrices : {},
+      changePercents : {},
       marketClosed : null,
       error : ""
     };
@@ -65,19 +66,24 @@ class Portfolio extends React.Component {
         let keys = Object.keys(res);
         let latestPrices = {};
         let openingPrices = {};
+        let changePercents = {};
 
         keys.forEach(symbol => {
-          latestPrices[symbol] = res[symbol].quote.latestPrice;
+          let latestPrice = res[symbol].quote.latestPrice;
+          let openingPrice = res[symbol].quote.open;
+          latestPrices[symbol] = latestPrice;
           
           // since the free API is limited, the opening price for the current day
             // isn't always returned (only returns from 8pm to 4:30am)
           // because of this, if the opening price is returned, use it
           // otherwise, use the previous closing price, which is always returned
-          if (res[symbol].quote.open) {
-            openingPrices[symbol] = res[symbol].quote.open;
+          if (openingPrice) {
+            openingPrices[symbol] = openingPrice;
           } else {
             openingPrices[symbol] = res[symbol].quote.previousClose;
           }
+
+          changePercents[symbol] = Math.ceil(10000 * (latestPrice - openingPrices[symbol]) / openingPrices[symbol]) / 100;
         });
 
         // check if the market has closed
@@ -98,7 +104,8 @@ class Portfolio extends React.Component {
 
         this.setState({
           latestPrices,
-          openingPrices
+          openingPrices,
+          changePercents
         });
       })
       .fail(res => {
@@ -212,7 +219,7 @@ class Portfolio extends React.Component {
     const { currentUser, stocks } = this.props;
     const {
       tickerSymbol, qty, error, submitButtonType, buyPrice, latestPrices,
-      openingPrices, marketClosed
+      openingPrices, marketClosed, changePercents
     } = this.state;
 
     let convertToCurrency = new Intl.NumberFormat('en-US', {
@@ -270,9 +277,11 @@ class Portfolio extends React.Component {
 
       let latestPrice = latestPrices[stock.ticker_symbol];
       let openingPrice = openingPrices[stock.ticker_symbol];
+      let changePercent = changePercents[stock.ticker_symbol];
       let priceText = latestPrice ? (
         convertToCurrency.format(latestPrice)
       ) : "...";
+      let plus = changePercent > 0 ? "+" : "";
       portfolioPrice += latestPrices[stock.ticker_symbol] * stock.shares;
 
       // give a dynamic class name to the price depending on the comparisons
@@ -293,9 +302,10 @@ class Portfolio extends React.Component {
       
       return (
         <tr className="stocks-table-row" key={i}>
-          <td className={`stocks-table-data ticker-symbol ${priceClassName}`}>{stock.ticker_symbol}</td>
+          <td className="stocks-table-data ticker-symbol">{stock.ticker_symbol}</td>
           <td className="stocks-table-data num-shares">{stock.shares} {sharesText}</td>
           <td className={`stocks-table-data price ${priceClassName}`}>{priceText}</td>
+          <td className={`stocks-table-data change-percents ${priceClassName}`}>{plus}{changePercent}%</td>
         </tr>
       );
     });

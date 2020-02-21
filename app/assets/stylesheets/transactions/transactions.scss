@@ -10,10 +10,12 @@
 .transactions-table-data {
   width: 26.66%;
   padding: 0.5em 0em;
+  text-align: end;
 }
 
 .transactions-table-data.type {
   width: 20%;
+  text-align: center !important;
 }
 
 .transactions-table-data.price {
@@ -28,9 +30,5 @@
 @media (max-width: 700px) {
   .transactions-outer-container {
     width: 100%;
-  }
-
-  .transactions-container {
-    font-size: 0.9em;
   }
 }

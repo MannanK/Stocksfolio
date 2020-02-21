@@ -46,6 +46,7 @@
 
 .ticker-symbol {
   color: lightskyblue;
+  text-align: center !important;
 }
 
 .num-shares {
@@ -53,9 +54,21 @@
 }
 
 @media (max-width: 700px) {
+  .stocks-container, .transactions-container {
+    font-size: 0.9em;
+  }
+
+  .transactions-table-data span {
+    font-size: 0.6rem !important;
+  }
+
   .page-header {
     text-align: center;
     margin-top: 0.6em;
     margin-bottom: 0.6em;
+  }
+
+  .num-shares {
+    text-align: inherit !important;
   }
 }
