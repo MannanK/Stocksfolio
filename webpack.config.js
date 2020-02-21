@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: './frontend/stocksfolio.jsx',
   output: {
-    path: path.resolve(__dirname, 'backend', 'app', 'assets', 'javascripts'),
+    path: path.resolve(__dirname, 'app', 'assets', 'javascripts'),
     filename: 'bundle.js'
   },
   module: {
