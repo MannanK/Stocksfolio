@@ -31,7 +31,7 @@ class Portfolio extends React.Component {
 
     if (!isEmpty(this.props.stocks)) {
       this.getPricesHelper();
-      this.getPricesIntervalId = setInterval(this.getPricesHelper, 15000);
+      this.getPricesIntervalId = setInterval(this.getPricesHelper, 8000);
     }
   }
 
@@ -39,7 +39,7 @@ class Portfolio extends React.Component {
     // if previously our stocks were empty and then we added a stock/stocks
     if (isEmpty(prevProps.stocks) && !isEmpty(this.props.stocks)) {
       this.getPricesHelper();
-      this.getPricesIntervalId = setInterval(this.getPricesHelper, 15000);
+      this.getPricesIntervalId = setInterval(this.getPricesHelper, 8000);
     }
     // if previously we had stocks and then we removed all stocks (currently 
       // not possible, but implemented as a precaution/future change)
@@ -68,12 +68,21 @@ class Portfolio extends React.Component {
 
         keys.forEach(symbol => {
           latestPrices[symbol] = res[symbol].quote.latestPrice;
-          openingPrices[symbol] = res[symbol].quote.previousClose;
+          
+          // since the free API is limited, the opening price for the current day
+            // isn't always returned (only returns from 8pm to 4:30am)
+          // because of this, if the opening price is returned, use it
+          // otherwise, use the previous closing price, which is always returned
+          if (res[symbol].quote.open) {
+            openingPrices[symbol] = res[symbol].quote.open;
+          } else {
+            openingPrices[symbol] = res[symbol].quote.previousClose;
+          }
         });
 
         // check if the market has closed
         // if the market has closed, there's no point in making API calls every
-          // 15 seconds anymore, because the values aren't going to change until
+          // 8 seconds anymore, because the values aren't going to change until
           // the market opens again
         // (current free API is limited and doesn't show after-hour prices)
         if (!res[keys[0]].quote.isUSMarketOpen) {
@@ -246,7 +255,7 @@ class Portfolio extends React.Component {
     if (marketClosed === null) {
       marketMessage = "...";
     } else if (!marketClosed) {
-      marketMessage = "Prices will update every 15 seconds.";
+      marketMessage = "Prices will update every 8 seconds.";
     } else if (marketClosed) {
       marketMessage = "The market is currently closed.";
     }
@@ -254,8 +263,8 @@ class Portfolio extends React.Component {
     let stockRows = Object.values(stocks).reverse().map((stock, i) => {
       let sharesText = stock.shares > 1 ? "shares" : "share";
 
-      let totalLatestPrice = latestPrices[stock.ticker_symbol] * stock.shares;
-      let totalOpeningPrice = openingPrices[stock.ticker_symbol] * stock.shares;
+      let totalLatestPrice = latestPrices[stock.ticker_symbol];
+      let totalOpeningPrice = openingPrices[stock.ticker_symbol];
       let priceText = totalLatestPrice ? (
         convertToCurrency.format(totalLatestPrice)
       ) : "...";
