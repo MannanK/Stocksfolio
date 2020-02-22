@@ -4,6 +4,11 @@
 
 Stocksfolio is a stock portfolio web-app created for the NYC Tech Talent Pipeline fullstack assessment.
 
+<p float="left">
+  <img src="https://github.com/MannanK/Stocksfolio/blob/master/app/assets/images/stocksfolio_1.png?raw=true" width="100%" />
+  <img src="https://github.com/MannanK/Stocksfolio/blob/master/app/assets/images/stocksfolio_2.png?raw=true" width="40%" /> 
+</p>
+
 ## Technologies
 
 On the frontend, Stocksfolio uses **React**, **Redux**, **Webpack**, and **SCSS**, as well as libraries such as **JQuery** and **lodash**.
